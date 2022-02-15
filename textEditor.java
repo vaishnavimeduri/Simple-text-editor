@@ -1,7 +1,11 @@
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.UndoableEditEvent;
+import javax.swing.event.UndoableEditListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.undo.CannotRedoException;
+import javax.swing.undo.UndoManager;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -22,6 +26,10 @@ public class textEditor extends JFrame implements ActionListener {
     JMenuItem openItem;
     JMenuItem saveItem;
     JMenuItem exitItem;
+    JMenu editmenu;
+    JMenuItem undoItem;
+    JMenuItem redoItem;
+    UndoManager undo1 = new UndoManager();
 
     textEditor(){
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -32,6 +40,12 @@ public class textEditor extends JFrame implements ActionListener {
 
         textarea=new JTextArea();
        // textarea.setPreferredSize(new Dimension(450,450));
+       textarea.getDocument().addUndoableEditListener(
+                new UndoableEditListener() {
+                    public void undoableEditHappened(UndoableEditEvent e1) {
+                        undo1.addEdit(e1.getEdit());
+                }
+});
         textarea.setLineWrap(true);
         textarea.setWrapStyleWord(true);
         textarea.setFont(new Font("Arial",Font.PLAIN,20));
@@ -79,6 +93,23 @@ public class textEditor extends JFrame implements ActionListener {
         fileMenu.add(exitItem);
 
         menuBar.add(fileMenu);
+
+        editmenu=new JMenu("Edit");
+
+        undoItem=new JMenuItem("Undo");
+       redoItem=new JMenuItem("Redo");
+        
+
+        undoItem.addActionListener(this);
+        redoItem.addActionListener(this);
+       
+
+
+       editmenu.add(undoItem);
+       editmenu.add(redoItem);
+        
+
+        menuBar.add(editmenu);
 
         this.setJMenuBar(menuBar); 
         this.add(fontLabel);
@@ -152,6 +183,20 @@ public class textEditor extends JFrame implements ActionListener {
     }
     if(e.getSource()==exitItem){
           System.exit(0);
+    }
+    if(e.getSource()==undoItem){
+        try {
+            undo1.undo();
+         } catch (CannotRedoException cre) {
+            cre.printStackTrace();
+         }
+    }
+    if(e.getSource()==redoItem){
+        try {
+            undo1.redo();
+         } catch (CannotRedoException cre) {
+            cre.printStackTrace();
+         }
     }
     }
 }
