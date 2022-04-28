@@ -38,9 +38,14 @@ public class textEditor extends JFrame implements ActionListener {
         this.setLayout(new FlowLayout());
         this.setLocationRelativeTo(null);
 
+<<<<<<< HEAD
         textarea = new JTextArea();
         // textarea.setPreferredSize(new Dimension(450,450));
         textarea.getDocument().addUndoableEditListener(
+=======
+        textarea=new JTextArea();
+       textarea.getDocument().addUndoableEditListener(
+>>>>>>> 4690e9a8e53755c96bd766be3fccef5d97e993af
                 new UndoableEditListener() {
                     public void undoableEditHappened(UndoableEditEvent e1) {
                         undo1.addEdit(e1.getEdit());
